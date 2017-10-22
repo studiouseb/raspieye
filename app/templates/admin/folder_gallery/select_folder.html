@@ -1,0 +1,28 @@
+<!-- app/templates/admin/folder_gallery/select_folder.html -->
+
+{% extends "base.html" %}
+{% block title %}Select a folder{% endblock %}
+{% block body %}
+<div class="content-section">
+  <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <div style="text-align: center">
+            <h1> Files </h1>
+            <h3> Selectum a folder</h3>
+            <hr class="intro-divider">
+             </div>
+             <form id="folder-select" action="{{ url_for('upload'}}" method="POST" enctype="multipart/form-data">
+               <input type = "file" name = "folder" accept="image/*" multiple>
+             <p class="help-block">Select a folder to display</p>
+            </div>
+            <a href="{{ url_for('home.homepage') }}" class="btn btn-default btn-lg">
+                <i class="fa fa-home"></i>
+                Home
+            </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

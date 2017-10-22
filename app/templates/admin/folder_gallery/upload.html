@@ -1,0 +1,28 @@
+<!-- app/templates/admin/folder_gallery/upload.html -->
+
+{% extends "base.html" %}
+{% block title %}Select a folder{% endblock %}
+{% block body %}
+<div class="content-section">
+  <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <div style="text-align: center">
+            <h1> Files Utilities</h1>
+            <h3> Upload a file</h3>
+            <hr class="intro-divider">
+            <div class="center">
+             </div>
+               <div style="text-align: center">
+                <form id="upload-form" action="{{ url_for('admin.upload')}}" method="POST" enctype="multipart/form-data">
+                  <input type = "file" name = "file" accept="image/*" multiple>
+                  <input type = "submit" value="upload">
+                </form>
+             <p class="help-block">Select a file to upload</p>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

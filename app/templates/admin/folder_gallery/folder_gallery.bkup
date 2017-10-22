@@ -1,0 +1,26 @@
+<!-- app/templates/admin/folder_gallery/folder_gallery.html -->
+
+{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
+{% block title %}Folder_Gallery{% endblock %}
+{% block body %}
+<div class="content-section">
+  <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <div style="text-align: center">
+            <h1> Uploaded Files Folder Gallery </h1>
+            <h3> Select an image to work with </h3>
+             {{image_names}}
+             {% for image_name in image_names %}
+              <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+               <img class= "img-responsive" src ="{{url_for('admin.send_image', filename=image_name)}}">
+              </div>
+             {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

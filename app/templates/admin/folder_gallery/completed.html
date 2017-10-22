@@ -1,0 +1,19 @@
+<!-- app/templates/admin/folder_gallery/completed.html -->
+
+{% extends "base.html" %}
+{% block title %}Completed{% endblock %}
+{% block body %}
+<div class="content-section">
+  <div class="outer">
+    <div class="middle">
+      <div class="inner">
+        <div style="text-align: center">
+            <h1> Upload successful!</h1>
+             <hr class="intro-divider">
+             <img src="{{url_for('admin.send_image', filename=filename)}}">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
