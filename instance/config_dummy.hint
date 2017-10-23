@@ -1,0 +1,21 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Oct 14 15:59:09 2017
+
+@author: seb
+
+This instance config file contains the various configs related to the instance.
+The file needs to be renamed config.py. and your secret key needs to be added. see below.
+"""
+
+
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+SQLALCHEMY_TRACK_MODIFICATIONS = 'False'
+WTF_CSRF_ENABLED = True
+
+SECRET_KEY = 'YOU NEED TO INSERT YOUR OWN SECRET KEY HERE'
+
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.sqlite')
+
