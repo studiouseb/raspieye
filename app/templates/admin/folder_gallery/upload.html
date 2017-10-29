@@ -20,7 +20,7 @@
             <div class="center">
              </div>
                <div style="text-align: center">
-               <form method = "post">
+               <form method = "post" enctype="multipart/form-data">
 
                 {{ form.csrf_token }}
                 {{ wtf.quick_form(form) }}

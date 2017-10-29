@@ -5,6 +5,8 @@ from app import db, login_manager
 
 APP_ROUTE = os.path.dirname(os.path.abspath(__file__))
 upload_path = APP_ROUTE + '/static/img/unified_image_set/'
+UPLOAD_FOLDER = upload_path
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 class Employee(UserMixin, db.Model):
     """

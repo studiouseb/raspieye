@@ -7,8 +7,15 @@ from . import admin
 from . forms import DepartmentForm, EmployeeAssignForm, RoleForm, PhotoUploadForm
 from ..models import Department, Employee, Role, Upload
 from .. import db
+from werkzeug.utils import secure_filename
 
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 APP_ROUTE = os.path.dirname(os.path.abspath(__file__))
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def check_admin():
@@ -249,13 +256,19 @@ def select_file():
     add_upload = True
     form = PhotoUploadForm()
     if form.validate_on_submit():
-        file_name=form.photo_name.data
-        upload = Upload(file_name=form.photo_name.data,
-                          description=form.description.data)
-        try:
-            # add upload to the database
+        if allowed_file(form.photo.data.filename):
+            file_name=form.photo.data.filename
+            file_data=form.photo.data
+            upload = Upload(file_name=file_name,
+                              description=form.description.data)
             db.session.add(upload)
             db.session.commit()
+        try:
+            # add upload to the database
+            filename = secure_filename(form.photo.data.filename)
+            print(filename)
+            save_path = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
+            form.photo.data.save(os.path.join(save_path, filename))
             flash('You have successfully added a new file.')
         except:
             # in case upload name already exists
