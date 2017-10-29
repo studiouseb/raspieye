@@ -1,19 +1,25 @@
 <!-- app/templates/admin/folder_gallery/completed.html -->
 
+{% import "bootstrap/utils.html" as utils %}
 {% extends "base.html" %}
 {% block title %}Completed{% endblock %}
 {% block body %}
 <div class="content-section">
   <div class="outer">
     <div class="middle">
+     <br/>
+      {{ utils.flashed_messages() }}
+     <br/>
       <div class="inner">
         <div style="text-align: center">
             <h1> Upload successful!</h1>
              <hr class="intro-divider">
-             <img src="{{url_for('admin.send_image', filename=filename)}}">
+
         </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
+
+<!--img src="{{url_for('admin.send_image', filename=filename)}}">

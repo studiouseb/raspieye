@@ -1,5 +1,6 @@
 <!-- app/templates/admin/folder_gallery/upload.html -->
 
+{% import "bootstrap/utils.html" as utils %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% extends "base.html" %}
 {% block title %}Select a folder{% endblock %}
@@ -11,7 +12,7 @@
       <div class="inner">
         <div style="text-align: center">
         <br/>
-
+          {{ utils.flashed_messages() }}
         <br/>
             <h1> Files Utilities</h1>
             <h3> Upload a file</h3>

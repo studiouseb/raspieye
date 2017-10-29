@@ -1,7 +1,10 @@
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import os
 from app import db, login_manager
+
+APP_ROUTE = os.path.dirname(os.path.abspath(__file__))
+upload_path = APP_ROUTE + '/static/img/unified_image_set/'
 
 class Employee(UserMixin, db.Model):
     """
@@ -90,8 +93,8 @@ class Upload(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     file_name = db.Column(db.String(256), unique=True)
-    #file_data = db.Column(db.LargeBinary)
-    description = db.Column(db.String(500))
+    description = db.Column(db.String(256))
+    path = db.Column(db.String(500), default=upload_path)
 
 
     def __repr__(self):

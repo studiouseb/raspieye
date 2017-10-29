@@ -246,39 +246,28 @@ def select_file():
     Select the folder to display in gallery
     """
     check_admin()
-    form = PhotoUploadForm(obj=Upload)
-
-    return render_template('admin/folder_gallery/upload.html', form = form)
-
-
-    if request.method == 'POST':
-        if form.validate_on_submit():
-
-            upload = Upload(file_name=form.photo.data,
-                              description=form.description.data)
-
+    add_upload = True
+    form = PhotoUploadForm()
+    if form.validate_on_submit():
+        file_name=form.photo_name.data
+        upload = Upload(file_name=form.photo_name.data,
+                          description=form.description.data)
+        try:
+            # add upload to the database
             db.session.add(upload)
             db.session.commit()
+            flash('You have successfully added a new file.')
+        except:
+            # in case upload name already exists
+            flash('Error: file name already exists.')
+
+    else:
+        return render_template('admin/folder_gallery/upload.html', form = form)
+
 
     return render_template("admin/folder_gallery/completed.html", filename=file_name)
 
 
-''' def upload():
-    print(APP_ROUTE)
-    target = os.path.join(APP_ROUTE[:-5], 'static/img/unified_image_set/uploads/')
-    print(target)
-    if not os.path.isdir(target):
-        print('target directory not found')
-
-    for file in request.files.getlist("file"):
-
-        filename = file.filename
-        print("the filename is ", filename)
-        destination = target + filename
-        print('this is the destination', destination)
-        file.save(destination)
-        print('completed save')
-    return render_template("admin/folder_gallery/completed.html", target=target, filename=filename)   '''
 @admin.route('/upload/<filename>')
 def send_image(filename):
     return send_from_directory('static/img/unified_image_set/uploads/', filename)
@@ -297,3 +286,22 @@ def display_folder():
     image_names = os.listdir(folder_name)
     print(image_names)
     return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names)
+
+
+
+''' def upload():
+    print(APP_ROUTE)
+    target = os.path.join(APP_ROUTE[:-5], 'static/img/unified_image_set/uploads/')
+    print(target)
+    if not os.path.isdir(target):
+        print('target directory not found')
+
+    for file in request.files.getlist("file"):
+
+        filename = file.filename
+        print("the filename is ", filename)
+        destination = target + filename
+        print('this is the destination', destination)
+        file.save(destination)
+        print('completed save')
+    return render_template("admin/folder_gallery/completed.html", target=target, filename=filename)   '''
