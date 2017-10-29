@@ -8,24 +8,48 @@ from . forms import LoginForm, RegistrationForm
 from .. import db
 from ..models import Employee
 
+def check_first_user():
+    """
+    Check if user is first user in DB, if so make admin.
+    """
+    employees = Employee.query.count()
+    if employees > 0:
+        return False
+    else:
+        return True
+
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     """
     Handle requests to the /register route
     Add an employee to the database through the registration form
     """
+
+    print(check_first_user())
     form = RegistrationForm()
     if form.validate_on_submit():
-        employee = Employee(email=form.email.data,
-                            username=form.username.data,
-                            first_name=form.first_name.data,
-                            last_name=form.last_name.data,
-                            password=form.password.data)
-
+        if check_first_user():
+            employee = Employee(email=form.email.data,
+                                username=form.username.data,
+                                first_name=form.first_name.data,
+                                last_name=form.last_name.data,
+                                password=form.password.data,
+                                is_admin=True)
+            admin = True
+        else:
+            employee = Employee(email=form.email.data,
+                                username=form.username.data,
+                                first_name=form.first_name.data,
+                                last_name=form.last_name.data,
+                                password=form.password.data)
+            admin = False
         # add employee to the database
         db.session.add(employee)
         db.session.commit()
-        flash('You have successfully registered! You may now login.')
+        if admin:
+            flash('You have successfully registered as an Administrator! You may now login.')
+        else:
+            flash('You have successfully registered! You may now login.')
 
         # redirect to the login page
         return redirect(url_for('auth.login'))
