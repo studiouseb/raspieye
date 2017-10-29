@@ -81,3 +81,19 @@ class Role(db.Model):
 
     def __repr__(self):
         return '<Role: {}>'.format(self.name)
+
+class Upload(db.Model):
+    """
+    Create an uploads table
+    """
+    __tablename__ = 'uploads'
+
+    id = db.Column(db.Integer, primary_key=True)
+    file_name = db.Column(db.String(256), unique=True)
+    #file_data = db.Column(db.LargeBinary)
+    description = db.Column(db.String(500))
+
+
+    def __repr__(self):
+        return '<Upload: {}>'.format(self.name)
+

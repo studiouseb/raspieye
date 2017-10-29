@@ -38,6 +38,8 @@ class PhotoUploadForm(FlaskForm):
     """
     Form for uploading images to the application database
     """
+    uploadfolder = APP_ROUTE
     photo = FileField('File name', validators=[FileRequired()])
-    description = StringField('Description', validators=[DataRequired()])
-    upload = SubmitField('Upload')
+    photo_path 
+    APP_ROUTE.format(photo)
+    
