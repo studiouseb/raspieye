@@ -295,9 +295,10 @@ def display_folder():
     check_admin()
 
     folder_name = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
-    print(folder_name)
+    #print(folder_name)
     image_names = os.listdir(folder_name)
-    print(image_names)
+    image_names.sort()
+    #print(image_names)
     return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names)
 
 
