@@ -100,5 +100,5 @@ class Upload(db.Model):
 
 
     def __repr__(self):
-        return '<Upload: {}>'.format(self.name)
+        return '<Upload: {}>'.format(self.file_name)
 

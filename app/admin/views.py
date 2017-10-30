@@ -17,6 +17,17 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def check_first_gallery():
+    """
+    Check if user is first user in DB, if so make admin.
+    """
+    candidates = Upload.query.count()
+    if candidates > 0:
+        return False
+    else:
+        return True
+
+
 
 def check_admin():
     """
@@ -297,6 +308,26 @@ def display_folder():
     folder_name = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
     #print(folder_name)
     image_names = os.listdir(folder_name)
+    registered_images = Upload.query.all()
+
+    a = Upload.query.filter(Upload.file_name.in_(image_names)).all()
+
+    print('next is a')
+    print(a)
+    if check_first_gallery():
+        for i in image_names:
+            if i in a:
+                pass
+            else:
+                try:
+
+                    to_be_uploaded = Upload(file_name=i, description='script generated')
+                    db.session.add(to_be_uploaded)
+                    db.session.commit()
+                except:
+                    pass
+
+    print(registered_images)
     image_names.sort()
     #print(image_names)
     return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names)
