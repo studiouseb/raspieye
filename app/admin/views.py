@@ -1,7 +1,13 @@
 # app/admin/views.py
 
-from flask import abort, flash, redirect, render_template, url_for, request, send_from_directory
+from flask import abort, flash, redirect, render_template, url_for, request, send_from_directory, jsonify
 from flask_login import current_user, login_required
+
+import os
+
+from ..tscripts.image_search.colordescriptor import ColorDescriptor
+from ..tscripts.image_search.searcher import Searcher
+
 import os
 from . import admin
 from . forms import DepartmentForm, EmployeeAssignForm, RoleForm, PhotoUploadForm
@@ -11,6 +17,9 @@ from werkzeug.utils import secure_filename
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 APP_ROUTE = os.path.dirname(os.path.abspath(__file__))
+INDEX = os.path.join(os.path.dirname(__file__), 'index.csv')
+
+print(INDEX)
 
 
 def allowed_file(filename):
@@ -269,7 +278,10 @@ def select_file():
     if form.validate_on_submit():
         if allowed_file(form.photo.data.filename):
             file_name=form.photo.data.filename
+            print(type(file_name))
             file_data=form.photo.data
+            print(type(file_data))
+            print(file_data)
             upload = Upload(file_name=file_name,
                               description=form.description.data)
             db.session.add(upload)
@@ -332,21 +344,47 @@ def display_folder():
     #print(image_names)
     return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names)
 
+@admin.route('/image_search', methods=['GET', 'POST'])
+def image_search():
+    if request.method == "POST":
+
+        RESULTS_ARRAY = []
+
+        # get url
+        image_url = request.form.get('img')
+
+        try:
+
+            # initialize the image descriptor
+            cd = ColorDescriptor((8, 12, 3))
+
+            # load the query image and describe it
+            from skimage import io
+            import cv2
+            query = io.imread(image_url)
+            query = (query * 255).astype("uint8")
+            (r, g, b) = cv2.split(query)
+            query = cv2.merge([b, g, r])
+            features = cd.describe(query)
+
+            # perform the search
+            searcher = Searcher(INDEX)
+            results = searcher.search(features)
+
+            # loop over the results, displaying the score and image name
+            for (score, resultID) in results:
+                RESULTS_ARRAY.append(
+                    {"image": str(resultID), "score": str(score)})
+
+            # return success
+            return jsonify(results=(RESULTS_ARRAY[:3]))
+
+        except:
+
+            # return error
+            jsonify({"sorry": "Sorry, no results! Please try again."}), 500
 
 
-''' def upload():
-    print(APP_ROUTE)
-    target = os.path.join(APP_ROUTE[:-5], 'static/img/unified_image_set/uploads/')
-    print(target)
-    if not os.path.isdir(target):
-        print('target directory not found')
-
-    for file in request.files.getlist("file"):
-
-        filename = file.filename
-        print("the filename is ", filename)
-        destination = target + filename
-        print('this is the destination', destination)
-        file.save(destination)
-        print('completed save')
-    return render_template("admin/folder_gallery/completed.html", target=target, filename=filename)   '''
+@admin.route('/measure', methods=['GET', 'POST'])
+def measure():
+    return helloagain
