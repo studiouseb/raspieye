@@ -2,6 +2,7 @@ instance/config.py
 .vscode
 userstories
 app/static/img/unified_image_set/
+app/static/img/unified_image_set/uploads/
 instance/
 migrations/
 

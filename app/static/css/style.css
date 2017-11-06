@@ -76,6 +76,15 @@ p.copyright {
     height: 100%;
 }
 
+.dash-intro-header {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    text-align: center;
+    color: #f8f8f8;
+    background-color: #581845 ;
+    height: 100%;
+}
+
 .intro-message {
     position: relative;
     padding-top: 20%;

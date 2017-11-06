@@ -53,10 +53,6 @@ class machine_stats():
             else:
                 time.sleep(3)
 
-        print('*CPU* TOTM *USEDM* FREEM')
-
-        for i in polls:
-            print(i, polls[i])
 
         return polls, title_list
 
@@ -66,7 +62,7 @@ class machine_stats():
         db_file = db_file
         table_stats = {}
         data_systems = {}
-        data_systems['Database File (Kb)'] = os.path.getsize(db_file)/10024
+        data_systems['Database File (Kb)'] = os.path.getsize(db_file)/1024
         data_systems['Image Folder (Gb)'] = int(os.path.getsize(image_files)/10024)
         #data_systems['vids_filesz'] = os.path.getsize("//videopath")
         #how to query for tables in db?
@@ -74,8 +70,7 @@ class machine_stats():
         for table in tables:
             records_per_table = db.session.query(func.count(table.id)).scalar()
             table_stats[table] = records_per_table
-        print(table_stats)
-        print(data_systems)
+
         return table_stats, data_systems
 
 

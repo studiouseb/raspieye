@@ -3,7 +3,7 @@
 {% extends "base.html" %}
 {% block title %}Admin Dashboard{% endblock %}
 {% block body %}
-<div class="intro-header">
+<div class="dash-intro-header">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -15,11 +15,11 @@
                     <table class="table table-condensed table-bordered table-responsive">
                     <thead>
                       <tr>
-                         <th width="5%"> Rec </th>
+                         <th width="10%"> Rec </th>
                          <th width="15%"> CPU Load </th>
-                         <th width="40%"> Total Memory </th>
-                         <th width="20%"> Used Memory </th>
-                         <th width="20%"> Free Memory </th>
+                         <th width="25%"> Total Memory </th>
+                         <th width="25%"> Used Memory </th>
+                         <th width="25%"> Free Memory </th>
                       </tr>
                     </thead>
                    <tbody>
@@ -42,16 +42,16 @@
                     <thead>
                       <tr>
                          <th width="10%"> Partition </th>
-                         <th width="40%"> Total Capacity </th>
-                         <th width="10%"> Used Space </th>
-                         <th width="40%"> Free Space </th>
+                         <th width="30%"> Total Capacity </th>
+                         <th width="30%"> Used Space </th>
+                         <th width="30%"> Free Space </th>
                       </tr>
                     </thead>
                      <tbody>
                        <tr>
                          <td> {% for key, value in disks.items() %} </td>
                            <tr>
-                            <td>{{ key }}</td>
+                            <td>  {{ key }}  </td>
                             <td>{{ value[0] }} Gb</td>
                             <td>{{ value[1] }} Gb</td>
                             <td>{{ value[2] }} Gb</td>
@@ -60,26 +60,47 @@
                      </tbody>
                      </table>
                     <br></br>
-                    <h3>Database Info</h3>
+                    <h3>Data Systems</h3>
                     <hr class="intro-divider">
                     <div class="center">
                     <table class="table table-condensed table-bordered table-responsive">
                     <thead>
                       <tr>
-                         <th width="50%"> - </th>
-                         <th width="50%"> Size</th>
+                         <th width="95%"> - </th>
+                         <th width="5%"> Size </th>
                       </tr>
                     </thead>
                      <tbody>
                        <tr>
                          <td> {% for key, value in data_systems.items() %} </td>
                            <tr>
-                            <td>{{ key }}</td>
-                            <td>{{ value }}</td>
+                            <td> {{ key }} </td>
+                            <td> {{ value }} </td>
                            </tr>
-                    {% endfor %}
-                     </tbody>
+                              {% endfor %}
+                       </tbody>
                      </table>
+                     <br></br>
+                     <h3>Database Info</h3>
+                     <hr class="intro-divider">
+                     <div class="center">
+                     <table class="table table-condensed table-bordered table-responsive">
+                     <thead>
+                       <tr>
+                          <th width="50%"> Table </th>
+                          <th width="50%"> Size </th>
+                       </tr>
+                     </thead>
+                      <tbody>
+                        <tr>
+                          <td> {% for key, value in table_stats.items() %} </td>
+                            <tr>
+                             <td> {{ key }} </td>
+                             <td> {{ value }} Records </td>
+                            </tr>
+                               {% endfor %}
+                       </tbody>
+                      </table>
                     </ul>
                 </div>
             </div>

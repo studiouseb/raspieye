@@ -1,0 +1,11 @@
+delete db
+delete migrations
+
+flask db init
+flask db migrate
+flask db upgrade
+
+
+git add -A
+git commit -am "dashboard and image search in the works"
+git push origin master

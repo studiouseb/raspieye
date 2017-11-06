@@ -34,4 +34,4 @@ def admin_dashboard():
     disks, directories = machine_stats.df_space(directories)
     table_stats, data_systems = machine_stats.db_health(db_file)
 
-    return render_template('home/admin_dashboard.html', title="Dashboard", load=load, disks=disks, title_list=title_list,    directories=directories, data_systems=data_systems)
+    return render_template('home/admin_dashboard.html', title="Dashboard", load=load, disks=disks, title_list=title_list,    directories=directories, data_systems=data_systems, table_stats=table_stats)
