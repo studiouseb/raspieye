@@ -46,15 +46,33 @@
                     </ul>
                    </li>
                    <li><a href="{{ url_for('home.admin_dashboard') }}">Dashboard</a></li>
-                   <li><a href="{{ url_for('admin.select_file') }}">Upload</a></li>
-                   <li><a href="{{ url_for('admin.display_folder') }}">Gallery</a></li>
-                  </ul>
+                   <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Uploads
+                    <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('admin.select_file') }}">General</a></li>
+                        <li><a href="{{ url_for('admin.list_employees') }}">Measuring Tool</a></li>
+                        <li><a href="{{ url_for('admin.list_roles') }}">Image Search Candidate</a></li>
+                        <li><a href="{{ url_for('admin.list_roles') }}">Document Scanner</a></li>
+                    </ul>
+                    </li>
+                   <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Gallery
+                    <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('admin.display_folder') }}">General</a></li>
+                        <li><a href="{{ url_for('admin.list_employees') }}">Measuring Tool</a></li>
+                        <li><a href="{{ url_for('admin.list_roles') }}">Image Search Candidate</a></li>
+                        <li><a href="{{ url_for('admin.list_roles') }}">Document Scanner</a></li>
+                    </ul>
+                   </li>
                   {% else %}
                    <li><a href="{{ url_for('home.dashboard') }}">Dashboard</a></li>
                   {% endif %}
-                  <div class="pull-right" <li><a href="{{ url_for('auth.logout') }}">Logout</a></li></div>
-                  <li><a><i class="fa fa-user" fa-4x ></i>  Hi, {{ current_user.username }}!     </a></li>
 
+
+                  <li><a><i class="fa fa-user" fa-4x ></i>  User: {{ current_user.username }}</a></li>
+                  <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
                  {% else %}
                   <li><a href="{{ url_for('home.homepage') }}">Home</a></li>
                   <li><a href="{{ url_for('auth.register') }}">Register</a></li>

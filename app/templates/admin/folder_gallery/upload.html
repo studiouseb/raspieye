@@ -5,7 +5,9 @@
 {% extends "base.html" %}
 {% block title %}Select a folder{% endblock %}
 {% block body %}
+
 <div class="content-section">
+<div class="dash-intro-header">
   <div class="outer">
     <div class="middle">
       <div class="inner">
@@ -13,11 +15,11 @@
         <br/>
           {{ utils.flashed_messages() }}
         <br/>
+           <div class="dash-intro-header">
             <h1> Files Utilities</h1>
             <h3> Upload a file</h3>
             <hr class="intro-divider">
             <div class="center">
-             </div>
                <div style="text-align: center">
                <form method = "post" enctype="multipart/form-data">
 
@@ -26,6 +28,9 @@
                </form>
              <p class="help-block">Select a file to upload</p>
             <input id="slider1" type="range" min="0" max="50" value="25" /> <br>
+             </div>
+             </div>
+             </div>
             </div>
         </div>
       </div>
