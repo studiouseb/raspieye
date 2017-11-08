@@ -46,16 +46,7 @@
                     </ul>
                    </li>
                    <li><a href="{{ url_for('home.admin_dashboard') }}">Dashboard</a></li>
-                   <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Uploads
-                    <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('admin.select_file') }}">General</a></li>
-                        <li><a href="{{ url_for('admin.list_employees') }}">Measuring Tool</a></li>
-                        <li><a href="{{ url_for('admin.list_roles') }}">Image Search Candidate</a></li>
-                        <li><a href="{{ url_for('admin.list_roles') }}">Document Scanner</a></li>
-                    </ul>
-                    </li>
+                   <li><a href="{{ url_for('admin.select_file') }}">Uploads</a></li>
                    <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Gallery
                     <span class="caret"></span></a>

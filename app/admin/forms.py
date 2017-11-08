@@ -1,7 +1,7 @@
 # app/admin/forms.py
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import DataRequired
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from ..models import Department, Role
@@ -40,5 +40,7 @@ class PhotoUploadForm(FlaskForm):
     """
 
     photo = FileField('Select images', render_kw={'multiple': True}, validators=[DataRequired()])
+    folder_name = SelectField('Upload Folder', choices=[('Gen','General'), ('DC','Document Scanner'),('MC','Measuring Candidate'), ('SC','Search Candidate')])
     description = StringField('Description', validators=[DataRequired()])
+
     upload = SubmitField('Upload')

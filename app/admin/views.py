@@ -18,9 +18,7 @@ from werkzeug.utils import secure_filename
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 APP_ROUTE = os.path.dirname(os.path.abspath(__file__))
 INDEX = os.path.join(os.path.dirname(__file__), 'index.csv')
-
-print(INDEX)
-
+print(APP_ROUTE)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -275,22 +273,41 @@ def select_file():
     check_admin()
     add_upload = True
     form = PhotoUploadForm()
+
+    GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
+    DS_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/doc_scanner/')
+    MTC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/measures/')
+    SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates/')
+
     if form.validate_on_submit():
+        print(form.folder_name.data)
+        if form.folder_name.data == 'Gen':
+            path = GEN_images
+            path_load = 'Gen'
+        elif form.folder_name.data == 'DC':
+            path = DS_images
+            path_load = 'DC'
+        elif form.folder_name.data == 'MC':
+            path = MTC_images
+            path_load = 'MC'
+        elif form.folder_name.data == 'SC':
+            path = SC_images
+            path_load = 'SC'
+
+
         if allowed_file(form.photo.data.filename):
             file_name=form.photo.data.filename
-            print(type(file_name))
             file_data=form.photo.data
-            print(type(file_data))
-            print(file_data)
             upload = Upload(file_name=file_name,
-                              description=form.description.data)
+                              description=form.description.data,
+                              path=path)
             db.session.add(upload)
             db.session.commit()
         try:
             # add upload to the database
             filename = secure_filename(form.photo.data.filename)
             print(filename)
-            save_path = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
+            save_path = path
             form.photo.data.save(os.path.join(save_path, filename))
             flash('You have successfully added a new file.')
         except:
@@ -301,12 +318,24 @@ def select_file():
         return render_template('admin/folder_gallery/upload.html', form = form)
 
 
-    return render_template("admin/folder_gallery/completed.html", filename=file_name)
+    return render_template("admin/folder_gallery/completed.html", filename = file_name, path_load = path_load)
 
 
-@admin.route('/upload/<filename>')
-def send_image(filename):
-    return send_from_directory('static/img/unified_image_set/uploads/', filename)
+@admin.route('<path>/<filename>')
+def send_image(path,filename):
+    GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
+    DS_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/doc_scanner/')
+    MTC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/measures/')
+    SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates/')
+    if path == 'Gen':
+        path = GEN_images
+    elif path == 'DC':
+        path = DS_images
+    elif path == 'MC':
+        path = MTC_images
+    elif path == 'SC':
+        path = SC_images
+    return send_from_directory(path,filename)
 
 
 @admin.route('/folder_gallery', methods=['GET', 'POST'])
