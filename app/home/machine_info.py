@@ -6,9 +6,16 @@ import time
 from ..models import Department, Employee, Role, Upload
 from sqlalchemy import func
 from .. import db
-image_files = '/home/pi/prj/scripts/chalice/raspieye/app/static/img/unified_image_set/uploads/.'
-
-
+#measureing tool candidates
+MTC_files = '/home/pi/prj/scripts/chalice/raspieye/app/static/img/unified_image_set/measures/.'
+#user uploaded search candidates
+SC_files = '/home/pi/prj/scripts/chalice/raspieye/app/static/img/unified_image_set/Search_Candidates/.'
+#search base of indexed images
+SB_files = '/home/pi/prj/scripts/chalice/raspieye/app/static/img/unified_image_set/Search_Holidaysnaps/.'
+#document scanner candidates
+DS_files = '/home/pi/prj/scripts/chalice/raspieye/app/static/img/unified_image_set/doc_scanner/.'
+image_files = '/home/pi/prj/scripts/chalice/raspieye/app/static/img/unified_image_set/.'
+GEN_files = '/home/pi/prj/scripts/chalice/raspieye/app/static/img/unified_image_set/uploads/.'
 class machine_stats():
 
     def df_space(directories):
@@ -62,8 +69,14 @@ class machine_stats():
         db_file = db_file
         table_stats = {}
         data_systems = {}
+        data_systems['All Images Folders (Gb)'] = int(os.path.getsize(image_files)/10024)
         data_systems['Database File (Kb)'] = os.path.getsize(db_file)/1024
-        data_systems['Image Folder (Gb)'] = int(os.path.getsize(image_files)/10024)
+        data_systems['Documents Scanner Folder (Mb)'] = int(os.path.getsize(DS_files)/1024)
+        data_systems['General Uploads Folder (Mb)'] = int(os.path.getsize(GEN_files)/1024)
+        data_systems['Measurement Tool Candidates Folder (Mb)'] = int(os.path.getsize(MTC_files)/1024)
+        data_systems['Search Base Folder (Gb)'] = int(os.path.getsize(SB_files)/10024)
+        data_systems['Search Candidates Images Folder (Mb)'] = int(os.path.getsize(SC_files)/1024)
+
         #data_systems['vids_filesz'] = os.path.getsize("//videopath")
         #how to query for tables in db?
         tables =[Employee, Department, Role, Upload]

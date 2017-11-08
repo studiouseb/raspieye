@@ -316,33 +316,40 @@ def display_folder():
     Select the folder to display in gallery
     """
     check_admin()
-
-    folder_name = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
-    #print(folder_name)
-    image_names = os.listdir(folder_name)
-    registered_images = Upload.query.all()
-
-    a = Upload.query.filter(Upload.file_name.in_(image_names)).all()
-
-    print('next is a')
-    print(a)
+    image_files = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/')
+    GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
+    DS_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/doc_scanner/')
+    MTC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/measures/')
+    SB_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates/')
+    SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Holidaysnaps/')
     if check_first_gallery():
-        for i in image_names:
-            if i in a:
-                pass
-            else:
-                try:
 
-                    to_be_uploaded = Upload(file_name=i, description='script generated')
+        all_images = [image_files, GEN_images, DS_images, MTC_images, SB_images, SC_images]
+        #print(folder_name)
+        for path in all_images:
+            print(path)
+            image_names = os.listdir(path)
+            a = Upload.query.filter(Upload.file_name.in_(image_names)).all()
+
+            for i in image_names:
+                try:
+                    to_be_uploaded = Upload(file_name=i, description='script generated', path=path)
                     db.session.add(to_be_uploaded)
                     db.session.commit()
                 except:
                     pass
 
-    print(registered_images)
-    image_names.sort()
-    #print(image_names)
-    return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names)
+        GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
+        image_names = os.listdir(GEN_images)
+        image_names.sort()
+        return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names)
+
+    else:
+        GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
+        image_names = os.listdir(GEN_images)
+        image_names.sort()
+
+        return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names)
 
 @admin.route('/image_search', methods=['GET', 'POST'])
 def image_search():

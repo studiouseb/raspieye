@@ -96,7 +96,7 @@ class Upload(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     file_name = db.Column(db.String(256), unique=True)
     description = db.Column(db.String(256))
-    path = db.Column(db.String(500), default=upload_path)
+    path = db.Column(db.String(500))
 
 
 
