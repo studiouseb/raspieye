@@ -280,89 +280,100 @@ def select_file():
     SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates/')
 
     if form.validate_on_submit():
-        print(form.folder_name.data)
+
         if form.folder_name.data == 'Gen':
             path = GEN_images
             path_load = 'Gen'
-        elif form.folder_name.data == 'DC':
+        elif form.folder_name.data == 'DS':
             path = DS_images
-            path_load = 'DC'
-        elif form.folder_name.data == 'MC':
+            path_load = 'DS'
+        elif form.folder_name.data == 'MTC':
             path = MTC_images
-            path_load = 'MC'
+            path_load = 'MTC'
         elif form.folder_name.data == 'SC':
             path = SC_images
             path_load = 'SC'
-
-
         if allowed_file(form.photo.data.filename):
-            file_name=form.photo.data.filename
-            file_data=form.photo.data
-            upload = Upload(file_name=file_name,
-                              description=form.description.data,
-                              path=path)
-            db.session.add(upload)
-            db.session.commit()
-        try:
-            # add upload to the database
-            filename = secure_filename(form.photo.data.filename)
-            print(filename)
-            save_path = path
-            form.photo.data.save(os.path.join(save_path, filename))
-            flash('You have successfully added a new file.')
-        except:
-            # in case upload name already exists
-            flash('Error: file name already exists.')
+
+            try:
+                # add upload to the database
+                file_name=form.photo.data.filename
+                file_data=form.photo.data
+                upload = Upload(file_name=file_name,
+                                  description=form.description.data,
+                                  path=path)
+                db.session.add(upload)
+                db.session.commit()
+                filename = secure_filename(form.photo.data.filename)
+
+                save_path = path
+                form.photo.data.save(os.path.join(save_path, filename))
+                flash('You have successfully added a new file.')
+                return render_template("admin/folder_gallery/completed.html", filename = file_name, path_load = path_load)
+
+            except:
+                # in case upload name already exists
+                db.session.rollback()
+                flash('Error: That file name already exists. Duplicates are discouraged.')
+                return render_template('admin/folder_gallery/upload.html', form = form)
+
+        else:
+            flash('That is not a supported file type.')
+            return render_template('admin/folder_gallery/upload.html', form = form)
 
     else:
+        flash('Please complete the form. COMPLETE.')
         return render_template('admin/folder_gallery/upload.html', form = form)
 
 
-    return render_template("admin/folder_gallery/completed.html", filename = file_name, path_load = path_load)
+
 
 
 @admin.route('<path>/<filename>')
 def send_image(path,filename):
+    path = path
     GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
     DS_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/doc_scanner/')
     MTC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/measures/')
     SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates/')
     if path == 'Gen':
         path = GEN_images
-    elif path == 'DC':
+    elif path == 'DS':
         path = DS_images
-    elif path == 'MC':
+    elif path == 'MTC':
         path = MTC_images
     elif path == 'SC':
         path = SC_images
     return send_from_directory(path,filename)
 
 
-@admin.route('/folder_gallery', methods=['GET', 'POST'])
+@admin.route('/folder_gallery/<path>', methods=['GET', 'POST'])
 @login_required
-def display_folder():
+def display_folder(path):
     """
     Select the folder to display in gallery
     """
     check_admin()
-    image_files = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/')
-    GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
-    DS_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/doc_scanner/')
-    MTC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/measures/')
-    SB_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates/')
-    SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Holidaysnaps/')
+    input_path = path
+    image_files = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set')
+    GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads')
+    DS_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/doc_scanner')
+    MTC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/measures')
+    SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates')
+    SB_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Holidaysnaps')
+
     if check_first_gallery():
 
         all_images = [image_files, GEN_images, DS_images, MTC_images, SB_images, SC_images]
         #print(folder_name)
-        for path in all_images:
-            print(path)
-            image_names = os.listdir(path)
+        for path_ in all_images:
+            print(path_)
+            image_names = os.listdir(path_)
             a = Upload.query.filter(Upload.file_name.in_(image_names)).all()
 
-            for i in image_names:
+            for img in image_names:
                 try:
-                    to_be_uploaded = Upload(file_name=i, description='script generated', path=path)
+                    to_be_uploaded = Upload(file_name=img, description='script generated', path=path_)
                     db.session.add(to_be_uploaded)
                     db.session.commit()
                 except:
@@ -371,14 +382,26 @@ def display_folder():
         GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
         image_names = os.listdir(GEN_images)
         image_names.sort()
-        return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names)
+        return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names, path=imput_path)
 
     else:
-        GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
-        image_names = os.listdir(GEN_images)
+        if input_path == 'Gen':
+            input_path = GEN_images
+            path_load = 'Gen'
+        elif input_path == 'MTC':
+            input_path = MTC_images
+            path_load = 'MTC'
+        elif input_path == 'SC':
+            input_path = SC_images
+            path_load = 'SC'
+        elif input_path == 'DS':
+            input_path = DS_images
+            path_load = 'DS'
+
+        image_names = os.listdir(input_path)
         image_names.sort()
 
-        return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names)
+        return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names, path=path_load)
 
 @admin.route('/image_search', methods=['GET', 'POST'])
 def image_search():

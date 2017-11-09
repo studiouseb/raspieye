@@ -51,10 +51,10 @@
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">Gallery
                     <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('admin.display_folder') }}">General</a></li>
-                        <li><a href="{{ url_for('admin.list_employees') }}">Measuring Tool</a></li>
-                        <li><a href="{{ url_for('admin.list_roles') }}">Image Search Candidate</a></li>
-                        <li><a href="{{ url_for('admin.list_roles') }}">Document Scanner</a></li>
+                        <li><a href="{{ url_for('admin.display_folder', path='Gen') }}">General</a></li>
+                        <li><a href="{{ url_for('admin.display_folder', path='MTC') }}">Measuring Tool</a></li>
+                        <li><a href="{{ url_for('admin.display_folder', path='SC') }}">Image Search Candidate</a></li>
+                        <li><a href="{{ url_for('admin.display_folder', path='DS') }}">Document Scanner</a></li>
                     </ul>
                    </li>
                   {% else %}
