@@ -44,3 +44,10 @@ class PhotoUploadForm(FlaskForm):
     description = StringField('Description', validators=[DataRequired()])
 
     upload = SubmitField('Upload')
+
+class ActivateTool(FlaskForm):
+    """
+    Form for activating image processing tool.
+    """
+    activate_tool = SubmitField('Activate')
+

@@ -327,8 +327,25 @@ def select_file():
         return render_template('admin/folder_gallery/upload.html', form = form)
 
 
-
-
+@admin.route('/process/<path_load>', methods=['GET', 'POST'])
+def process_image(path_load):
+    path = path_load
+    GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
+    DS_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/doc_scanner/')
+    MTC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/measures/')
+    SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates/')
+    if path == 'Gen':
+        path = GEN_images
+        tool = [None]
+    elif path == 'DS':
+        path = DS_images
+        tool = ['DS']
+    elif path == 'MTC':
+        path = MTC_images
+        tool = ['MTC']
+    elif path == 'SC':
+        path = SC_images
+        tool = ['SC']
 
 @admin.route('<path>/<filename>')
 def send_image(path,filename):
