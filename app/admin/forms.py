@@ -40,7 +40,7 @@ class PhotoUploadForm(FlaskForm):
     """
 
     photo = FileField('Select images', render_kw={'multiple': True}, validators=[DataRequired()])
-    folder_name = SelectField('Upload Folder', choices=[('Gen','General'), ('DC','Document Scanner'),('MC','Measuring Candidate'), ('SC','Search Candidate')])
+    folder_name = SelectField('Upload Folder', choices=[('Gen','General'), ('DS','Document Scanner'),('MTC','Measuring Candidate'), ('SC','Search Candidate')])
     description = StringField('Description', validators=[DataRequired()])
 
     upload = SubmitField('Upload')

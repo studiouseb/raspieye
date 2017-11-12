@@ -293,6 +293,7 @@ def select_file():
         elif form.folder_name.data == 'SC':
             path = SC_images
             path_load = 'SC'
+
         if allowed_file(form.photo.data.filename):
 
             try:
