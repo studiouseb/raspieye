@@ -143,4 +143,4 @@ class Doc_scanner:
         del warp2, dilate, dilation, kernel1, warped2, warped
         original = '{}{}'.format(path, ext)
 
-        return os.path.basename(save_fileW), os.path.basename(save_fileD), os.path.basename(path)
+        return os.path.basename(save_fileW), os.path.basename(save_fileD), os.path.basename(original)

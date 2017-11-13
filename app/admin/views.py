@@ -8,6 +8,7 @@ import os
 from ..tscripts.image_search.colordescriptor import ColorDescriptor
 from ..tscripts.image_search.searcher import Searcher
 from ..tscripts.doc_scanner.Doc_Scanner import Doc_scanner
+from ..tscripts.measures.Measuring_Tool import Measuring_Tool
 
 import os
 from . import admin
@@ -317,11 +318,18 @@ def select_file():
                 if path_load == 'DS':
 
                     warp2, dilate, original = process_image(path_load, filename)
-
                     image_list = [warp2, dilate, original]
 
+                elif path_load == 'MTC':
+                    print('Gate 1')
+                    original = process_image(path_load, filename)
+                    print('gaet 5')
+                    image_list = [original,]
+
                 else:
+
                     image_list = [save_path]
+                print('gate 6')
                 return render_template("admin/folder_gallery/completed.html", path_load=path_load, image_list=image_list)
 
             except:
@@ -341,22 +349,32 @@ def select_file():
 
 @admin.route('/process/<path_load>', methods=['GET', 'POST'])
 def process_image(path_load, filename):
+
     path_load = path_load
     GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
     DS_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/doc_scanner/')
     MTC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/measures/')
     SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates/')
+
     if path_load == 'Gen':
         path = GEN_images
         tool = [None]
+
     elif path_load == 'DS':
         path = DS_images
         tool = Doc_scanner()
         warp2, dilate, original = tool.doc_scanner(path, filename)
         return warp2, dilate, original
+
     elif path_load == 'MTC':
+        print('gate 2')
         path = MTC_images
-        tool = ['MTC']
+        tool = Measuring_Tool()
+        print('gate 3')
+        original = tool.measure(path, filename)
+        print('gate 4')
+        return original
+
     elif path_load == 'SC':
         path = SC_images
         tool = ['SC']
