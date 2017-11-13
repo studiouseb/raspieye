@@ -14,7 +14,7 @@
              {% for image_name in image_names %}
               <div class="dash-intro-header">
               <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-               <img class= "img-responsive" src ="{{url_for('admin.send_image', filename=image_name, path=path)}}"></img>
+               <img class= "img-responsive" src ="{{url_for('admin.send_image', filename=image_name, path_load=path_load)}}"></img>
                <div class="clearfix"></div>
              </div>
              {% endfor %}

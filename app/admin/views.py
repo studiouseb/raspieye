@@ -2,11 +2,12 @@
 
 from flask import abort, flash, redirect, render_template, url_for, request, send_from_directory, jsonify
 from flask_login import current_user, login_required
-
+import imutils
 import os
 
 from ..tscripts.image_search.colordescriptor import ColorDescriptor
 from ..tscripts.image_search.searcher import Searcher
+from ..tscripts.doc_scanner.Doc_Scanner import Doc_scanner
 
 import os
 from . import admin
@@ -308,9 +309,22 @@ def select_file():
                 filename = secure_filename(form.photo.data.filename)
 
                 save_path = path
+
                 form.photo.data.save(os.path.join(save_path, filename))
+                save_path = save_path + filename
                 flash('You have successfully added a new file.')
-                return render_template("admin/folder_gallery/completed.html", filename = file_name, path_load = path_load)
+                print('checkpointone')
+                if path_load == 'DS':
+                    print('checkpointtwo')
+                    warp2, dilate, original = process_image(path_load, filename)
+                    print('checkpointfive')
+                    image_list = [warp2, dilate, original]
+                    for item in image_list:
+                         print(item)
+                    print('checkpointsix')
+                else:
+                    image_list = [save_path]
+                return render_template("admin/folder_gallery/completed.html", path_load=path_load, image_list=image_list)
 
             except:
                 # in case upload name already exists
@@ -328,57 +342,74 @@ def select_file():
 
 
 @admin.route('/process/<path_load>', methods=['GET', 'POST'])
-def process_image(path_load):
-    path = path_load
+def process_image(path_load, filename):
+    path_load = path_load
     GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
     DS_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/doc_scanner/')
     MTC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/measures/')
     SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates/')
-    if path == 'Gen':
+    if path_load == 'Gen':
         path = GEN_images
         tool = [None]
-    elif path == 'DS':
+    elif path_load == 'DS':
         path = DS_images
-        tool = ['DS']
-    elif path == 'MTC':
+        tool = Doc_scanner()
+        print(tool)
+        print('checkpointthree')
+        warp2, dilate, original = tool.doc_scanner(path, filename)
+        print('checkpointfour')
+        return warp2, dilate, original
+    elif path_load == 'MTC':
         path = MTC_images
         tool = ['MTC']
-    elif path == 'SC':
+    elif path_load == 'SC':
         path = SC_images
         tool = ['SC']
 
-@admin.route('<path>/<filename>')
-def send_image(path,filename):
-    path = path
+@admin.route('/<path_load>/<filename>')
+def send_image(path_load,filename):
+    path_load = path_load
     GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
     DS_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/doc_scanner/')
     MTC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/measures/')
     SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates/')
-    if path == 'Gen':
+    if path_load == 'Gen':
         path = GEN_images
-    elif path == 'DS':
+    elif path_load == 'DS':
         path = DS_images
-    elif path == 'MTC':
+    elif path_load == 'MTC':
         path = MTC_images
-    elif path == 'SC':
+    elif path_load == 'SC':
         path = SC_images
     return send_from_directory(path,filename)
 
 
-@admin.route('/folder_gallery/<path>', methods=['GET', 'POST'])
+@admin.route('/folder_gallery/<path_load>', methods=['GET', 'POST'])
 @login_required
-def display_folder(path):
+def display_folder(path_load):
     """
     Select the folder to display in gallery
     """
     check_admin()
-    input_path = path
+    input_path = path_load
     image_files = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set')
-    GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads')
+    GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
     DS_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/doc_scanner')
     MTC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/measures')
     SC_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Candidates')
     SB_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/Search_Holidaysnaps')
+    if input_path == 'Gen':
+        input_path = GEN_images
+        path_load = 'Gen'
+    elif input_path == 'MTC':
+        input_path = MTC_images
+        path_load = 'MTC'
+    elif input_path == 'SC':
+        input_path = SC_images
+        path_load = 'SC'
+    elif input_path == 'DS':
+        input_path = DS_images
+        path_load = 'DS'
 
     if check_first_gallery():
 
@@ -400,26 +431,15 @@ def display_folder(path):
         GEN_images = os.path.join(APP_ROUTE[:-5],'static/img/unified_image_set/uploads/')
         image_names = os.listdir(GEN_images)
         image_names.sort()
-        return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names, path=imput_path)
+        return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names, path_load=path_load)
 
     else:
-        if input_path == 'Gen':
-            input_path = GEN_images
-            path_load = 'Gen'
-        elif input_path == 'MTC':
-            input_path = MTC_images
-            path_load = 'MTC'
-        elif input_path == 'SC':
-            input_path = SC_images
-            path_load = 'SC'
-        elif input_path == 'DS':
-            input_path = DS_images
-            path_load = 'DS'
+
 
         image_names = os.listdir(input_path)
         image_names.sort()
 
-        return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names, path=path_load)
+        return render_template('admin/folder_gallery/folder_gallery.html', image_names=image_names, path_load=path_load)
 
 @admin.route('/image_search', methods=['GET', 'POST'])
 def image_search():
