@@ -313,15 +313,13 @@ def select_file():
                 form.photo.data.save(os.path.join(save_path, filename))
                 save_path = save_path + filename
                 flash('You have successfully added a new file.')
-                print('checkpointone')
+
                 if path_load == 'DS':
-                    print('checkpointtwo')
+
                     warp2, dilate, original = process_image(path_load, filename)
-                    print('checkpointfive')
+
                     image_list = [warp2, dilate, original]
-                    for item in image_list:
-                         print(item)
-                    print('checkpointsix')
+
                 else:
                     image_list = [save_path]
                 return render_template("admin/folder_gallery/completed.html", path_load=path_load, image_list=image_list)
@@ -354,10 +352,7 @@ def process_image(path_load, filename):
     elif path_load == 'DS':
         path = DS_images
         tool = Doc_scanner()
-        print(tool)
-        print('checkpointthree')
         warp2, dilate, original = tool.doc_scanner(path, filename)
-        print('checkpointfour')
         return warp2, dilate, original
     elif path_load == 'MTC':
         path = MTC_images

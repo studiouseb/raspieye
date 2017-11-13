@@ -78,10 +78,8 @@ class Doc_scanner:
         # load the image and compute the ratio of the old height
         # to the new height, clone it, and resize it
         image = path + filename
-        print('this is the image path '+ image)
         path, ext = os.path.splitext(image)
         image = cv2.imread(image)
-        print('image_read')
         ratio = image.shape[0] / 500.0
         orig = image.copy()
         image = resize(image, height = 500)
@@ -93,7 +91,6 @@ class Doc_scanner:
         edged = cv2.Canny(gray, 75, 200)
 
         # show the original image and the edge detected image
-        print("STEP 1: Edge Detection")
         #find the contours in the edged image, keeping only the
         #largest ones, and initialise the screen contour
         (_, cnts, _) = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -115,12 +112,11 @@ class Doc_scanner:
                 #print("approx 1", screenCnt)
 
         #show the contour of the piece of paper
-        print("STEP 2: Find contours of paper")
+
         cv2.drawContours(image, [screenCnt], -1, (0, 255, 0), 2)
         #apply the four point transform
         #to obtain top down view
         warped = self.four_point_transform(orig, screenCnt.reshape(4,2) * ratio)
-        print('warp achieved')
         #convert the warped image to grayscale
         #then threshold it, to give it
         #that 'black and white' paper effect
@@ -137,17 +133,14 @@ class Doc_scanner:
         dilation = cv2.dilate(warped2, kernel1, 5)
 
         #show the original and scanned images
-        print("STEP 3 :Apply perspective transform")
         #warp1 = resize(warped1, height = 650)
         warp2 = resize(warped2, height = 650)
         dilate = resize(dilation, height = 650)
-        print('warped and dilated')
         save_fileW = '{}{}{}'.format(path, '_transformed_warped', ext)
         save_fileD = '{}{}{}'.format(path, '_transformed_dilated', ext)
-        print('Save files: ' + save_fileW + save_fileD)
         cv2.imwrite(save_fileW, warp2 )
         cv2.imwrite(save_fileD, dilate )
+        del warp2, dilate, dilation, kernel1, warped2, warped
         original = '{}{}'.format(path, ext)
-        print('files_written')
-        print('basenames: ' + os.path.basename(save_fileW), os.path.basename(save_fileD), original)
+
         return os.path.basename(save_fileW), os.path.basename(save_fileD), os.path.basename(path)
