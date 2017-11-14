@@ -48,15 +48,15 @@ class Measuring_Tool:
     def image_load(self, image):
 
         #load the calibration file
-        print('im image_load')
+
         with np.load('/home/pi/prj/scripts/chalice/raspieye/app/tscripts/measures/camera_calibrations/20170521_00h31m26s560859_Calibration.npz') as X:
             mtx, dist, _, _ = [X[i] for i in ('mtx', 'dist', 'rvecs', 'tvecs')]
-        print('calibration loaded')
+
         # load our input image, convert it to grayscale, and blur it slightly
         #image = webcam.get_current_frame()
-        print('loaded calibration')
+
         image = cv2.imread(image)
-        print('loaded image')
+
         h,  w = image.shape[:2]
         newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx,dist,(w,h),1,(w,h))
         dst = cv2.undistort(image, mtx, dist, None, newcameramtx)
@@ -93,17 +93,11 @@ class Measuring_Tool:
         image = image
         image_ = image
         path_, ext_ = os.path.splitext(image)
-        print('in measure')
+
         image = path + image
-        print('image path created.....', image)
-        print('loading image')
         gray, image = self.image_load(image)
-        print(image)
-        print('image loaded')
         edged = self.edge_detection(gray)
-        print('edge detected')
         cnts = self.find_contours(edged)
-        print('contours read')
 
         # sort the contours from left-to-right and initialize the bounding box
         # point colors
@@ -113,20 +107,19 @@ class Measuring_Tool:
         #set the size in mm of the reference object e.g. 0.50 c coin = 22 (i.e. 22 mm). Set the unit at whatever you want returned.
         pixelsPerMetric = 65
 
-        print('entering c')
+
     # loop over the contours individually
         orig = image.copy()
         for c in cnts:
         # if the contour is not sufficiently large, ignore it
             if cv2.contourArea(c) < 300:
                 continue
-            print('bounding box')
+
             # compute the rotated bounding box of the contour
 
             box = cv2.minAreaRect(c)
             box = cv2.boxPoints(box)
             box = np.array(box, dtype="int")
-
 
             # order the points in the contour such that they appear
             # in top-left, top-right, bottom-right, and bottom-left
@@ -134,11 +127,10 @@ class Measuring_Tool:
             # box
             box = perspective.order_points(box)
             cv2.drawContours(orig, [box.astype("int")], -1, (0, 255, 0), 2)
-            print('circles')
+
             # loop over the original points and draw them
             for (x, y) in box:
                 cv2.circle(orig, (int(x), int(y)), 5, (0, 0, 255), -1)
-
 
             # unpack the ordered bounding box, then compute the midpoint
             # between the top-left and top-right coordinates, followed by
@@ -157,21 +149,21 @@ class Measuring_Tool:
             cv2.circle(orig, (int(blbrX), int(blbrY)), 5, (0, 255, 0), -1)
             cv2.circle(orig, (int(tlblX), int(tlblY)), 5, (0, 0, 255), -1)
             cv2.circle(orig, (int(trbrX), int(trbrY)), 5, (175, 75, 175), -1)
-            print('lines')
+
             # draw lines between the midpoints
             cv2.line(orig, (int(tltrX), int(tltrY)), (int(blbrX), int(blbrY)),
                 (255, 0, 255), 1)
             cv2.line(orig, (int(tlblX), int(tlblY)), (int(trbrX), int(trbrY)),
                 (255, 0, 255), 1)
-            print('halfway')
+
             # compute the Euclidean distance between the midpoints
             dA = dist.euclidean((tltrX, tltrY), (blbrX, blbrY))
             dB = dist.euclidean((tlblX, tlblY), (trbrX, trbrY))
-            print('euclidian')
+
             # compute the size of the object
             dimA = dA / pixelsPerMetric
             dimB = dB / pixelsPerMetric
-            print('metrics done')
+
             # draw the object sizes on the image
             cv2.putText(orig, "{:.2f}cm".format(dimB),
                 (int(tltrX - 15), int(tltrY - 10)), cv2.FONT_HERSHEY_SIMPLEX,
@@ -179,12 +171,10 @@ class Measuring_Tool:
             cv2.putText(orig, "{:.2f}cm".format(dimA),
                 (int(trbrX + 10), int(trbrY)), cv2.FONT_HERSHEY_SIMPLEX,
                 1, (255, 255, 255), 2)
-        print('text put')
+
 
         original = '{}{}{}{}'.format(path, path_, '_measured', ext_)
 
 
-
-        print('original: ', original)
         cv2.imwrite(original, orig)
         return os.path.basename(original)

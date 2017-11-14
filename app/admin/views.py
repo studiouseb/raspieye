@@ -321,15 +321,13 @@ def select_file():
                     image_list = [warp2, dilate, original]
 
                 elif path_load == 'MTC':
-                    print('Gate 1')
+
                     original = process_image(path_load, filename)
-                    print('gaet 5')
                     image_list = [original,]
 
                 else:
 
                     image_list = [save_path]
-                print('gate 6')
                 return render_template("admin/folder_gallery/completed.html", path_load=path_load, image_list=image_list)
 
             except:
@@ -429,7 +427,6 @@ def display_folder(path_load):
         all_images = [image_files, GEN_images, DS_images, MTC_images, SB_images, SC_images]
         #print(folder_name)
         for path_ in all_images:
-            print(path_)
             image_names = os.listdir(path_)
             a = Upload.query.filter(Upload.file_name.in_(image_names)).all()
 
