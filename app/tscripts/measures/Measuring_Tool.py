@@ -111,14 +111,14 @@ class Measuring_Tool:
         colors = ((0, 0, 255), (240, 0, 159), (255, 0, 0), (255, 255, 0))
 
         #set the size in mm of the reference object e.g. 0.50 c coin = 22 (i.e. 22 mm). Set the unit at whatever you want returned.
-        pixelsPerMetric = 22
+        pixelsPerMetric = 65
 
         print('entering c')
     # loop over the contours individually
         orig = image.copy()
         for c in cnts:
         # if the contour is not sufficiently large, ignore it
-            if cv2.contourArea(c) < 700:
+            if cv2.contourArea(c) < 300:
                 continue
             print('bounding box')
             # compute the rotated bounding box of the contour
@@ -173,15 +173,15 @@ class Measuring_Tool:
             dimB = dB / pixelsPerMetric
             print('metrics done')
             # draw the object sizes on the image
-            cv2.putText(orig, "{:.2f}cm".format(dimA),
+            cv2.putText(orig, "{:.2f}cm".format(dimB),
                 (int(tltrX - 15), int(tltrY - 10)), cv2.FONT_HERSHEY_SIMPLEX,
                 1, (255, 255, 255), 2)
-            cv2.putText(orig, "{:.2f}cm".format(dimB),
+            cv2.putText(orig, "{:.2f}cm".format(dimA),
                 (int(trbrX + 10), int(trbrY)), cv2.FONT_HERSHEY_SIMPLEX,
                 1, (255, 255, 255), 2)
         print('text put')
 
-        original = '{}{}{}'.format(path, '_measured', ext_)
+        original = '{}{}{}{}'.format(path, path_, '_measured', ext_)
 
 
 
